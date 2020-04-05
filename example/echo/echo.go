@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/tls"
@@ -13,7 +12,7 @@ import (
 	"math/big"
 	"time"
 
-	quic "github.com/lucas-clemente/quic-go"
+	"github.com/lucas-clemente/quic-go"
 )
 
 var (
@@ -68,7 +67,7 @@ func Server() error {
 		return err
 	}
 	for {
-		sess, err := listener.Accept(context.Background())
+		sess, err := listener.Accept()
 		if err != nil {
 			log.Printf("listen accept fail %s", err.Error())
 			continue
@@ -77,7 +76,7 @@ func Server() error {
 		log.Printf("accept session %s", sess.RemoteAddr())
 		go func() {
 			for {
-				stream, err := sess.AcceptStream(context.Background())
+				stream, err := sess.AcceptStream()
 				if err != nil {
 					log.Printf("session accept stream %s", err.Error())
 					return
@@ -123,7 +122,7 @@ func Client() error {
 	for i:=0; i<Par ; i++ {
 
 		go func() {
-			stream, err := session.OpenStreamSync(context.Background())
+			stream, err := session.OpenStreamSync()
 			if err != nil {
 				log.Printf("open stream fail : %s", err.Error())
 				return
